@@ -38,12 +38,14 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;backgro
 .sec-score{font-size:13px;font-weight:500}
 
 /* Indicator */
-.ind{display:grid;grid-template-columns:1fr 90px 140px 44px;align-items:center;padding:10px 16px 2px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px}
+.ind{display:grid;grid-template-columns:1fr 80px 180px 50px;align-items:center;padding:10px 16px 2px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px}
 .ind:last-child{border-bottom:none}
 .ind-name{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ind-val{text-align:right;color:var(--dim);font-family:'SF Mono',Menlo,monospace;font-size:12px}
-.ind-bar{display:flex;align-items:center;gap:6px;padding:0 6px}
-.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.ind-bar{display:flex;align-items:center;gap:4px;padding:0 4px;flex-direction:column}
+.bar-wrap{display:flex;align-items:center;width:100%;gap:4px}
+.bar-bound{font-size:9px;color:var(--dim);font-family:'SF Mono',Menlo,monospace;white-space:nowrap}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;position:relative}
 .bar-fill{height:100%;border-radius:3px;transition:width .5s,background .3s}
 .bar-sc{font-size:11px;color:var(--dim);font-family:'SF Mono',Menlo,monospace;width:32px;text-align:right}
 .ind-st{text-align:center;font-size:13px}
@@ -89,7 +91,7 @@ body{padding:8px}
 .gauge-num{font-size:28px}
 .summary{grid-template-columns:1fr 1fr 1fr;gap:6px}
 .sum-val{font-size:15px}
-.ind{grid-template-columns:1fr 55px 90px 36px;font-size:12px}
+.ind{grid-template-columns:1fr 60px 140px 40px;font-size:12px}
 .buy-grid{grid-template-columns:1fr}
 .cfg-row{grid-template-columns:1fr 45px 55px 55px;font-size:11px}
 }
@@ -289,7 +291,24 @@ const dirLabel=s.dir==='asc'?'↑越高越危':'↓越低越危';
 const ruleText=`🟢安全≤${s.s}${s.u||''} 🔴危险≥${s.d}${s.u||''} ${dirLabel} W=${s.w}`;
 const ruleTextDesc=`🟢安全≥${s.s}${s.u||''} 🔴危险≤${s.d}${s.u||''} ${dirLabel} W=${s.w}`;
 const rule=s.dir==='asc'?ruleText:ruleTextDesc;
-h+=`<div class="ind"><div class="ind-name" title="${s.n} (${s.date})">${s.cn}</div><div class="ind-val">${dvUnit}</div><div class="ind-bar"><div class="bar-track"><div class="bar-fill" style="width:${s.sc}%;background:${COL[st_.c]}"></div></div><div class="bar-sc">${s.sc}分</div></div><div class="ind-st">${st_.e}</div><div class="ind-rule">${rule}</div></div>`;
+// 进度条：左=安全线 右=危险线 fill=当前值位置
+let barPct=0,leftBound,rightBound;
+if(s.dir==='asc'){
+  leftBound=s.s; rightBound=s.d;
+  if(s.val!=null){
+    if(s.val<=s.s)barPct=Math.max(0,(s.val/Math.max(s.s,.01))*40);
+    else if(s.val<=s.d)barPct=40+((s.val-s.s)/Math.max(s.d-s.s,.01))*40;
+    else barPct=Math.min(100,80+((s.val-s.d)/Math.max(s.d-s.s,.01))*20);
+  }
+}else{
+  leftBound=s.d; rightBound=s.s;
+  if(s.val!=null){
+    if(s.val>=s.s)barPct=Math.max(0,((s.s-s.val+s.s)/Math.max(s.s,.01))*20);
+    else if(s.val>=s.d)barPct=40+((s.s-s.val)/Math.max(s.s-s.d,.01))*40;
+    else barPct=Math.min(100,80+((s.d-s.val)/Math.max(s.s-s.d,.01))*20);
+  }
+}
+h+=`<div class="ind"><div class="ind-name" title="${s.n} (${s.date})">${s.cn}</div><div class="ind-val">${dvUnit}</div><div class="ind-bar"><div class="bar-wrap"><div class="bar-bound" style="color:var(--safe)">${leftBound}</div><div class="bar-track"><div class="bar-fill" style="width:${barPct}%;background:${COL[st_.c]}"></div></div><div class="bar-bound" style="color:var(--danger)">${rightBound}</div></div></div><div class="ind-st">${st_.e}${s.sc}分</div><div class="ind-rule">${rule}</div></div>`;
 }
 document.getElementById('ind'+lk).innerHTML=h;
 
