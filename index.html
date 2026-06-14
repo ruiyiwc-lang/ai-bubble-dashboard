@@ -146,6 +146,11 @@ body{padding:8px}
 </div>
 
 <div class="sec">
+<div class="sec-hdr"><span class="sec-title">🇨🇳 科创50四档触发器 · v8.0铁桶</span><span class="sec-score" id="kc50State">--</span></div>
+<div id="kc50Box"></div>
+</div>
+
+<div class="sec">
 <div class="sec-hdr"><span class="sec-title">⚖️ 天平比值</span><span class="sec-score" id="balDisp">--</span></div>
 <div class="bal-row">
 <span>BABA增速%</span><input class="bal-input" id="balBG" type="number" value="45" onchange="updBal()">
@@ -434,6 +439,70 @@ let ah='';
 for(const a of ash){const d=D.a_shares?.[a.k]||{};const price=d.price??d.status??'--';const chg=d.change!=null?(d.change>=0?'+':'')+d.change+'%':'';const cc=d.change>0?COL.danger:d.change<0?COL.safe:'var(--dim)';
 ah+=`<div class="ind"><div class="ind-name">${a.n}</div><div class="ind-val">${price}</div><div class="ind-bar" style="color:${cc};font-size:13px;justify-content:flex-end">${chg}</div><div></div></div>`;}
 document.getElementById('ashBox').innerHTML=ah;
+
+// 科创50四档触发器
+const kc=D.kc50;
+if(kc){
+  const cur=kc.current?.value??0;
+  const chg=kc.current?.change??0;
+  const high=kc.high_2026??cur;
+  const tiers=kc.tiers||[];
+  const dropPct=high>0?((high-cur)/high*100):0;
+  // 判断当前触发到哪档(最严格的已触发档)
+  let hitIdx=-1;
+  tiers.forEach((t,i)=>{if(cur<=t.level)hitIdx=i;});
+  const nextT=hitIdx<tiers.length-1?tiers[hitIdx+1]:null;
+  const distNext=nextT?(cur-nextT.level):0;
+  const distNextPct=nextT?((cur-nextT.level)/cur*100):0;
+  // 状态色
+  const stColor=hitIdx<0?COL.safe:hitIdx===0?COL.warn:COL.danger;
+  const stEmoji=hitIdx<0?'🟢':hitIdx===0?'🟡':'🔴';
+  const stLabel=hitIdx<0?'未触发':'已触发 '+tiers[hitIdx].label;
+  document.getElementById('kc50State').textContent=stEmoji+' '+stLabel;
+  document.getElementById('kc50State').style.color=stColor;
+  // 顶部信息条
+  const chgColor=chg>0?COL.danger:chg<0?COL.safe:'var(--dim)';
+  const chgTxt=chg!=null?(chg>=0?'+':'')+chg.toFixed(2)+'%':'';
+  let kh=`<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <div><span style="font-size:22px;font-weight:700;color:${stColor}">${cur.toFixed(1)}</span><span style="font-size:12px;color:var(--dim);margin-left:6px">点 · ${kc.current?.date||''}</span></div>
+      <div style="font-size:13px;color:${chgColor}">${chgTxt}</div>
+      <div style="font-size:12px;color:var(--dim)">2026高 ${high} · 距高<b style="color:${dropPct>=30?COL.danger:dropPct>=15?COL.warn:'var(--text)'}">-${dropPct.toFixed(1)}%</b></div>
+    </div>
+    ${nextT?`<div style="font-size:12px;color:var(--dim);margin-top:6px">距下一档 <b style="color:var(--warn)">${nextT.label}(${nextT.level}点)</b> 还差 ${distNext.toFixed(1)}点 (-${distNextPct.toFixed(1)}%)</div>`:`<div style="font-size:12px;color:${COL.danger};margin-top:6px">⚡ 已触发T4最深档·满仓信号</div>`}
+  </div>`;
+  // 进度条：当前点位在 670-1200 区间的位置
+  const barMin=600, barMax=Math.max(1200,high);
+  const curPct=Math.max(0,Math.min(100,((barMax-cur)/(barMax-barMin))*100));
+  kh+=`<div style="padding:8px 16px 4px"><div style="position:relative;height:10px;background:var(--border);border-radius:5px;overflow:visible">
+    <div style="position:absolute;left:0;top:0;height:100%;width:${curPct}%;background:linear-gradient(90deg,var(--safe),var(--warn),var(--danger));border-radius:5px"></div>`;
+  // 4档标记线
+  tiers.forEach(t=>{
+    const pos=Math.max(0,Math.min(100,((barMax-t.level)/(barMax-barMin))*100));
+    const isHit=cur<=t.level;
+    kh+=`<div style="position:absolute;left:${pos}%;top:-2px;height:14px;width:2px;background:${isHit?COL.danger:'var(--dim)'};opacity:.8"></div>
+         <div style="position:absolute;left:${pos}%;top:14px;font-size:9px;color:${isHit?COL.danger:'var(--dim)'};transform:translateX(-50%);white-space:nowrap;font-family:'SF Mono',monospace">${t.level}</div>`;
+  });
+  kh+=`</div><div style="height:14px"></div></div>`;
+  // 四档操作清单
+  kh+=`<div style="padding:8px 0">`;
+  tiers.forEach((t,i)=>{
+    const isHit=cur<=t.level;
+    const isCurrent=i===hitIdx;
+    const bgColor=isCurrent?'rgba(239,68,68,.08)':isHit?'rgba(234,179,8,.05)':'transparent';
+    const lblColor=isHit?COL.danger:'var(--text)';
+    const lblEmoji=isCurrent?'⚡':isHit?'✓':'○';
+    kh+=`<div style="padding:8px 16px;background:${bgColor};border-left:3px solid ${isHit?COL.danger:'var(--border)'};margin-bottom:2px;font-size:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+        <div><span style="font-weight:600;color:${lblColor}">${lblEmoji} ${t.label}</span> <span style="color:var(--dim);font-family:'SF Mono',monospace">≤${t.level}点 · -${t.drop}%</span></div>
+        <div style="color:${isHit?COL.danger:'var(--dim)'};font-weight:${isHit?'600':'400'}">${t.action}</div>
+      </div>
+      <div style="font-size:11px;color:var(--dim);opacity:.85;margin-top:3px">${t.items}</div>
+    </div>`;
+  });
+  kh+=`</div>`;
+  document.getElementById('kc50Box').innerHTML=kh;
+}
 }
 
 /* ===== INIT ===== */
@@ -502,6 +571,16 @@ var BUBBLE_DATA = {
     smic: { price: 124.88, change: -1.98, date: '2026-06-13', source: '同花顺' },
     sourcejet: { price: 1394, change: -0.45, date: '2026-06-13', source: '东方财富' },
     cxmt_ipo: { status: '已过会·注册生效·等待发行', date: '2026-06-14', source: '财联社' }
+  },
+  kc50: {
+    current: { value: 1180, change: 0, date: '2026-06-14', source: 'EastMoney 000688' },
+    high_2026: 1180,
+    tiers: [
+      { id: 't1', level: 820, drop: 30, label: 'T1·关注', action: '观察+v8.0信号联动核查', items: '激活逆向池价格警戒' },
+      { id: 't2', level: 770, drop: 35, label: 'T2·分批清', action: '清仓第三档9只', items: '芯源微/澜起/长电/中芯A/通富/兆易/华虹H/深南/曙光' },
+      { id: 't3', level: 720, drop: 40, label: 'T3·抄底1档', action: '建仓第一档3只(各30%仓)', items: '华海¥175/安集¥185/雅克¥86' },
+      { id: 't4', level: 670, drop: 45, label: 'T4·满仓1+2档', action: '满仓第一二档12只', items: '紫光¥18优先+中微¥175+盛美¥150+拓荆¥310等' }
+    ]
   }
 };
 // ==== BUBBLE_DATA_END ====
