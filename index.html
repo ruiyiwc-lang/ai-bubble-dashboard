@@ -38,14 +38,14 @@ body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;backgro
 .sec-score{font-size:13px;font-weight:500}
 
 /* Indicator */
-.ind{display:grid;grid-template-columns:1fr 70px 130px 44px;align-items:center;padding:10px 16px 2px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px}
+.ind{display:grid;grid-template-columns:1fr 90px 140px 44px;align-items:center;padding:10px 16px 2px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px}
 .ind:last-child{border-bottom:none}
 .ind-name{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ind-val{text-align:right;color:var(--dim);font-family:'SF Mono',Menlo,monospace;font-size:12px}
 .ind-bar{display:flex;align-items:center;gap:6px;padding:0 6px}
 .bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
 .bar-fill{height:100%;border-radius:3px;transition:width .5s,background .3s}
-.bar-sc{font-size:11px;color:var(--dim);font-family:'SF Mono',Menlo,monospace;width:22px;text-align:right}
+.bar-sc{font-size:11px;color:var(--dim);font-family:'SF Mono',Menlo,monospace;width:32px;text-align:right}
 .ind-st{text-align:center;font-size:13px}
 .ind-rule{grid-column:1/-1;padding:0 16px 8px;font-size:11px;color:var(--dim);opacity:.7;font-family:'SF Mono',Menlo,monospace}
 
@@ -284,11 +284,12 @@ let lastZone='';
 for(const s of scores){const st_=getSt(s.sc);
 if(s.zone&&s.zone!==lastZone){lastZone=s.zone;h+=`<div style="padding:6px 16px 2px;font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">${s.zone==='海外'?'🌍 海外':'🇨🇳 国内'}</div>`;}
 const dv=s.val!=null?(typeof s.val==='number'?(Math.abs(s.val)>=100?Math.round(s.val):s.val):s.val):'--';
+const dvUnit=s.u?(dv+' '+s.u):dv;
 const dirLabel=s.dir==='asc'?'↑越高越危':'↓越低越危';
 const ruleText=`🟢安全≤${s.s}${s.u||''} 🔴危险≥${s.d}${s.u||''} ${dirLabel} W=${s.w}`;
 const ruleTextDesc=`🟢安全≥${s.s}${s.u||''} 🔴危险≤${s.d}${s.u||''} ${dirLabel} W=${s.w}`;
 const rule=s.dir==='asc'?ruleText:ruleTextDesc;
-h+=`<div class="ind"><div class="ind-name" title="${s.n} (${s.date})">${s.cn}</div><div class="ind-val">${dv}</div><div class="ind-bar"><div class="bar-track"><div class="bar-fill" style="width:${s.sc}%;background:${COL[st_.c]}"></div></div><div class="bar-sc">${s.sc}</div></div><div class="ind-st">${st_.e}</div><div class="ind-rule">${rule}</div></div>`;
+h+=`<div class="ind"><div class="ind-name" title="${s.n} (${s.date})">${s.cn}</div><div class="ind-val">${dvUnit}</div><div class="ind-bar"><div class="bar-track"><div class="bar-fill" style="width:${s.sc}%;background:${COL[st_.c]}"></div></div><div class="bar-sc">${s.sc}分</div></div><div class="ind-st">${st_.e}</div><div class="ind-rule">${rule}</div></div>`;
 }
 document.getElementById('ind'+lk).innerHTML=h;
 
