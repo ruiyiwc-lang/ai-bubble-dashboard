@@ -113,6 +113,7 @@ body{padding:8px}
 <div class="meta">📅 <b id="hDate">--</b></div>
 <div class="meta">门1 <b id="hGate">--</b></div>
 </div>
+<div id="hdrRule" style="margin-top:8px;font-size:11px;color:#6b7394;line-height:1.7;opacity:.85"></div>
 </div>
 </div>
 
@@ -175,16 +176,16 @@ const LAYERS={
 {k:'h100_price',n:'H100 Used',cn:'H100二手价',u:'$K',w:2,s:17,d:14,dir:'desc'}
 ]},
 '1':{wt:30,items:[
-{k:'nvda_pe',n:'NVDA Fwd PE',cn:'英伟达远期PE',u:'x',w:10,s:22,d:18,dir:'desc'},
-{k:'sox',n:'SOX',cn:'费城半导体',u:'%距高',w:6,s:10,d:25,dir:'asc'},
-{k:'tsm',n:'TSM',cn:'台积电',u:'%距高',w:5,s:10,d:25,dir:'asc'},
-{k:'sk_hynix',n:'SK Hynix',cn:'海力士',u:'%距高',w:2,s:10,d:25,dir:'asc'},
-{k:'avgo',n:'AVGO',cn:'博通',u:'%距高',w:3,s:10,d:25,dir:'asc'},
-{k:'mu',n:'MU',cn:'美光',u:'%距高',w:2,s:10,d:25,dir:'asc'},
-{k:'xuchuang',n:'中际旭创',cn:'光模块300308',u:'%距高',w:1,s:10,d:25,dir:'asc'},
-{k:'hudian',n:'沪电股份',cn:'PCB 002463',u:'%距高',w:1,s:10,d:25,dir:'asc'},
-{k:'fulian',n:'工业富联',cn:'服务器601138',u:'%距高',w:1,s:10,d:25,dir:'asc'},
-{k:'etf_512480',n:'半导体ETF',cn:'512480',u:'%距高',w:1,s:10,d:25,dir:'asc'}
+{k:'nvda_pe',n:'NVDA Fwd PE',cn:'NVIDIA 英伟达 PE',u:'x',w:10,s:22,d:18,dir:'desc'},
+{k:'sox',n:'SOX',cn:'SOX 费城半导体指数',u:'%距高',w:6,s:10,d:25,dir:'asc'},
+{k:'tsm',n:'TSM',cn:'TSM 台积电',u:'%距高',w:5,s:10,d:25,dir:'asc'},
+{k:'sk_hynix',n:'SK Hynix',cn:'SK Hynix 海力士',u:'%距高',w:2,s:10,d:25,dir:'asc'},
+{k:'avgo',n:'AVGO',cn:'AVGO 博通',u:'%距高',w:3,s:10,d:25,dir:'asc'},
+{k:'mu',n:'MU',cn:'MU 美光',u:'%距高',w:2,s:10,d:25,dir:'asc'},
+{k:'xuchuang',n:'中际旭创',cn:'中际旭创 300308',u:'%距高',w:1,s:10,d:25,dir:'asc'},
+{k:'hudian',n:'沪电股份',cn:'沪电股份 002463',u:'%距高',w:1,s:10,d:25,dir:'asc'},
+{k:'fulian',n:'工业富联',cn:'工业富联 601138',u:'%距高',w:1,s:10,d:25,dir:'asc'},
+{k:'etf_512480',n:'半导体ETF',cn:'半导体ETF 512480',u:'%距高',w:1,s:10,d:25,dir:'asc'}
 ]}
 };
 
@@ -315,6 +316,10 @@ document.getElementById('gNum').style.color=COL[tSt.c];
 const tTxt=['🟢 低温·安全','温和·警觉','🟡 升温·差半步','🔴 高温·随时触发','🔴 过热·执行卖出'];
 document.getElementById('hStatus').textContent=temp<25?tTxt[0]:temp<40?tTxt[1]:temp<55?tTxt[2]:temp<70?tTxt[3]:tTxt[4];
 document.getElementById('hStatus').style.color=COL[tSt.c];
+document.getElementById('hdrRule').innerHTML=
+  `<b>评分公式：</b>温度 = 0.5层×${R['05'].wt}% + 零层×${R['0'].wt}% + 一层×${R['1'].wt}%<br>`+
+  `<b>门限：</b>🟢≤40 安全 · 🟡40-70 警戒 · 🔴>70 危险<br>`+
+  `<b>操作：</b>&lt;40 持仓不动 · 40-55 准备弹药 · &gt;55 执行卖出`;
 
 // Triggers
 const nw05=R['05'].nWarn, nw0=R['0'].nWarn;
