@@ -323,28 +323,50 @@ document.getElementById('hdrRule').innerHTML=
   `<b>门限：</b>🟢≤40 安全 · 🟡40-70 警戒 · 🔴>70 危险<br>`+
   `<b>操作：</b>&lt;40 持仓不动 · 40-55 准备弹药 · &gt;55 执行卖出`;
 
-// Triggers
-const nw05=R['05'].nWarn, nw0=R['0'].nWarn;
-const overseas=R['1'].scores.slice(0,6).filter(s=>s.sc>40).length;
-const domestic=R['1'].scores.slice(6).filter(s=>s.sc>40).length;
-const nd0=R['0'].nDanger;
-const anyNonSafe=R['05'].nWarn+R['0'].nWarn+R['1'].nWarn;
+// Triggers — 按权重比例而非个数
+// 计算每组"警戒态权重/总权重"
+function warnRatio(scores,filter){
+  let wW=0,wT=0;
+  for(const s of scores){if(filter&&!filter(s))continue; wT+=s.w; if(s.sc>40)wW+=s.w;}
+  return wT>0?wW/wT:0;
+}
+function dangerRatio(scores,filter){
+  let wW=0,wT=0;
+  for(const s of scores){if(filter&&!filter(s))continue; wT+=s.w; if(s.sc>70)wW+=s.w;}
+  return wT>0?wW/wT:0;
+}
+const wr05=warnRatio(R['05'].scores);
+const wr0=warnRatio(R['0'].scores);
+const wrOverseas=warnRatio(R['1'].scores,s=>s.zone==='海外');
+const wrDomestic=warnRatio(R['1'].scores,s=>s.zone==='国内');
+const dr0=dangerRatio(R['0'].scores);
+const wrAll=warnRatio([...R['05'].scores,...R['0'].scores,...R['1'].scores]);
+
+// 阈值：权重占比>=50%才算该组"警戒达标"
+const T_WARN=0.50, T_DANGER=0.25;
 const trigs=[
-{l:'① 0.5层≥2警戒 + 零层≥1警戒',met:nw05>=2&&nw0>=1,gap:Math.max(0,2-nw05)+Math.max(0,1-nw0)},
-{l:'② 一层海外≥2警戒 + 一层国内≥2警戒',sub:'海外=NVDA/SOX/TSM/SK/AVGO/MU　国内=旭创/沪电/富联/ETF',met:overseas>=2&&domestic>=2,gap:Math.max(0,2-overseas)+Math.max(0,2-domestic)},
-{l:'③ 零层≥1危险 + 任意层≥1警戒',met:nd0>=1&&anyNonSafe>=1,gap:Math.max(0,1-nd0)+Math.max(0,1-Math.min(anyNonSafe,1))}
+{l:'① 0.5层警戒权重≥50% + 零层警戒权重≥50%',
+ sub:`当前: 0.5层=${(wr05*100).toFixed(0)}% · 零层=${(wr0*100).toFixed(0)}%`,
+ met:wr05>=T_WARN&&wr0>=T_WARN, pct:Math.min(wr05/T_WARN,wr0/T_WARN)*100},
+{l:'② 一层海外警戒权重≥50% + 国内警戒权重≥50%',
+ sub:`当前: 海外=${(wrOverseas*100).toFixed(0)}%(NVDA/SOX/TSM/SK/AVGO/MU) · 国内=${(wrDomestic*100).toFixed(0)}%(旭创/沪电/中芯/ETF)`,
+ met:wrOverseas>=T_WARN&&wrDomestic>=T_WARN, pct:Math.min(wrOverseas/T_WARN,wrDomestic/T_WARN)*100},
+{l:'③ 零层危险权重≥25% + 全局警戒权重≥50%',
+ sub:`当前: 零层危险=${(dr0*100).toFixed(0)}% · 全局警戒=${(wrAll*100).toFixed(0)}%`,
+ met:dr0>=T_DANGER&&wrAll>=T_WARN, pct:Math.min(dr0/T_DANGER,wrAll/T_WARN)*100}
 ];
-let th='',minGap=99,anyTrig=false;
+let th='',maxPct=0,anyTrig=false;
 for(const t of trigs){
 if(t.met)anyTrig=true;
-if(!t.met&&t.gap<minGap)minGap=t.gap;
-const c=t.met?COL.danger:'var(--dim)';
-th+=`<div class="trig"><div>${t.l}${t.sub?'<div style="font-size:11px;color:var(--dim);opacity:.7;margin-top:2px">'+t.sub+'</div>':''}</div><div class="trig-r" style="color:${c}">${t.met?'✓ 触发!':'差 '+t.gap+' 步'}</div></div>`;
+if(t.pct>maxPct)maxPct=t.pct;
+const c=t.met?COL.danger:(t.pct>=80?COL.warn:'var(--dim)');
+const label=t.met?'✓ 触发!':(t.pct>=80?'⚠️ '+Math.round(t.pct)+'%':Math.round(t.pct)+'%');
+th+=`<div class="trig"><div>${t.l}<div style="font-size:11px;color:var(--dim);opacity:.7;margin-top:2px">${t.sub}</div></div><div class="trig-r" style="color:${c}">${label}</div></div>`;
 }
 document.getElementById('trigBox').innerHTML=th;
 const cl=document.getElementById('sClosest');
-cl.textContent=anyTrig?'✓已触发!':'差'+minGap+'步';
-cl.style.color=anyTrig?COL.danger:(minGap<=1?COL.warn:COL.safe);
+cl.textContent=anyTrig?'✓已触发!':Math.round(maxPct)+'%';
+cl.style.color=anyTrig?COL.danger:(maxPct>=80?COL.warn:COL.safe);
 const ac=document.getElementById('sAction');
 if(anyTrig){ac.textContent='🚨 执行卖出';ac.style.color=COL.danger;}
 else if(temp>=55){ac.textContent='准备卖出';ac.style.color=COL.danger;}
