@@ -510,7 +510,7 @@ loadCfg();
 
 // ==== BUBBLE_DATA_START ====
 var BUBBLE_DATA = {
-  updateDate: '2026-06-14',
+  updateDate: '2026-06-15',
   manual: {
     gate1: true,
     gate1_demand: 'strong',
@@ -525,56 +525,56 @@ var BUBBLE_DATA = {
   },
   layer05: {
     credit_spread: { value: 278, unit: 'bps', date: '2026-06-11', source: 'FRED' },
-    margin_debt: { value: 1.30, unit: '$T', date: '2026-04-30', source: 'FINRA' },
-    growth_value: { value: 0, unit: '月Value跑赢', date: '2026-06-14', source: 'Morningstar' },
+    margin_debt: { value: 1.304, unit: '$T', date: '2026-04-30', source: 'FINRA' },
+    growth_value: { value: 5, unit: '月Value跑赢', date: '2026-06-13', source: 'Morningstar/JPM' },
     market_breadth: { value: 61, unit: '%>200DMA', date: '2026-06-13', source: 'Barchart' }
   },
   layer0: {
-    openai_arr: { value: 40, unit: '%QoQ', date: '2026-05-15', source: 'The Information' },
-    enterprise_budget: { value: 0.3, unit: '0-1级别', date: '2026-06-14', source: 'CIO/FairPlay' },
-    token_price_war: { value: 0.2, unit: '0-1级别', date: '2026-06-14', source: 'API pricing' },
-    csp_capex: { value: 0.05, unit: '0-1级别', date: '2026-05-01', source: 'Earnings transcripts' },
-    ipo_progress: { value: 0.1, unit: '0-1级别', date: '2026-06-10', source: 'Reuters' },
-    dram_spot: { value: 5, unit: '%溢价', date: '2026-06-14', source: 'TrendForce' },
-    cowos_lead: { value: 14, unit: '月', date: '2026-06-14', source: 'Silicon Analysts' },
-    h100_price: { value: 19, unit: '$K', date: '2026-06-14', source: 'SiliconData' }
+    openai_arr: { value: 35, unit: '%QoQ', date: '2026-06-15', source: 'The Information/TechCrunch' },
+    enterprise_budget: { value: 0.35, unit: '0-1级别', date: '2026-06-15', source: 'FairPlay/Writer/CIO' },
+    token_price_war: { value: 0.92, unit: '0-1级别', date: '2026-06-15', source: 'Reuters/InfoWorld' },
+    csp_capex: { value: 0.88, unit: '0-1级别', date: '2026-06-15', source: 'CNBC/Futurum' },
+    ipo_progress: { value: 0.75, unit: '0-1级别', date: '2026-06-15', source: 'Saxo/Renaissance' },
+    dram_spot: { value: 30, unit: '%溢价', date: '2026-06-15', source: 'TrendForce/DRAMeXchange' },
+    cowos_lead: { value: 12, unit: '月', date: '2026-06-15', source: 'Silicon Analysts/Digitimes' },
+    h100_price: { value: 20, unit: '$K', date: '2026-06-15', source: 'Oplexa/SiliconData' }
   },
   layer1: {
-    nvda_pe: { value: 20.7, unit: 'x', date: '2026-06-13', source: 'Stock Analysis' },
-    sox: { value: 5.9, unit: '%距高点', high: 13998, price: 13171, date: '2026-06-13', source: 'Yahoo Finance' },
-    tsm: { value: 5.8, unit: '%距高点', high: 450.16, price: 423.93, date: '2026-06-13', source: 'Stock Analysis' },
-    sk_hynix: { value: 10.2, unit: '%距高点', high: 2407000, price: 2162000, date: '2026-06-13', source: 'Bloomberg' },
-    avgo: { value: 22.8, unit: '%距高点', high: 495, price: 382, date: '2026-06-13', source: 'Yahoo Finance' },
-    mu: { value: 9.9, unit: '%距高点', high: 1089, price: 981, date: '2026-06-13', source: 'Yahoo Finance' },
-    xuchuang: { value: 12.0, unit: '%距高点', high: 1320, price: 1161, date: '2026-06-13', source: '东方财富' },
-    hudian: { value: 12.3, unit: '%距高点', high: 142.78, price: 125.20, date: '2026-06-13', source: '东方财富' },
-    smic: { value: 12.8, unit: '%距高点', high: 142.5, price: 124.88, date: '2026-06-13', source: '东方财富' },
-    etf_512480: { value: 6.4, unit: '%距高点', high: 2.22, price: 2.078, date: '2026-06-13', source: '东方财富' }
+    nvda_pe: { value: 20.6, unit: 'x', date: '2026-06-13', source: 'CNBC' },
+    sox: { value: 4.5, unit: '%距高点', high: 13998.14, price: 13371.47, date: '2026-06-13', source: 'Nasdaq/Barchart' },
+    tsm: { value: 5.4, unit: '%距高点', high: 450.16, price: 425.80, date: '2026-06-13', source: 'CNBC' },
+    sk_hynix: { value: 4.1, unit: '%距高点', high: 2407000, price: 2309000, date: '2026-06-13', source: 'Google Finance' },
+    avgo: { value: 22.7, unit: '%距高点', high: 495, price: 382.57, date: '2026-06-13', source: 'CNBC' },
+    mu: { value: 9.2, unit: '%距高点', high: 1089.29, price: 989.46, date: '2026-06-13', source: 'CNBC' },
+    xuchuang: { value: 13.0, unit: '%距高点', high: 1320, price: 1149.00, date: '2026-06-13', source: '新浪财经' },
+    hudian: { value: 12.3, unit: '%距高点', high: 142.78, price: 125.20, date: '2026-06-13', source: '新浪财经' },
+    smic: { value: 12.4, unit: '%距高点', high: 142.5, price: 124.88, date: '2026-06-13', source: '新浪财经/富途' },
+    etf_512480: { value: 6.4, unit: '%距高点', high: 2.22, price: 2.078, date: '2026-06-13', source: '搜狐证券' }
   },
   layer2: {
     tencent_pe: { value: 13.1, unit: 'x', date: '2026-06-13', source: 'GuruFocus' },
-    baba_pe: { value: 17.4, unit: 'x', date: '2026-06-13', source: 'GuruFocus' },
-    tsm_pe: { value: 22.2, unit: 'x', date: '2026-06-13', source: 'Stock Analysis' },
-    asml_pe: { value: 46.3, unit: 'x', date: '2026-06-13', source: 'ValueInvesting.io' },
-    asml_from_peak: { value: 4, unit: '%距峰€1700', date: '2026-06-13', source: 'Bloomberg' }
+    baba_pe: { value: 17.0, unit: 'x', date: '2026-06-13', source: 'Yahoo Finance' },
+    tsm_pe: { value: 25.6, unit: 'x', date: '2026-06-13', source: 'CNBC' },
+    asml_pe: { value: 48.1, unit: 'x', date: '2026-06-13', source: 'StockAnalysis' },
+    asml_from_peak: { value: 2.1, unit: '%距峰$1903.5', date: '2026-06-13', source: 'CNBC' }
   },
   layer3: {
     vix: { value: 17.7, date: '2026-06-13', source: 'CBOE' },
-    us10y: { value: 4.45, unit: '%', date: '2026-06-13', source: 'FRED' },
-    gold: { value: 4211, unit: '$/oz', date: '2026-06-13', source: 'GoldPrice.org' },
-    brent: { value: 87.3, unit: '$/bbl', date: '2026-06-13', source: 'Trading Economics' },
-    copper: { value: 14200, unit: '$/t', date: '2026-06-13', source: 'LME' },
-    cnooc_yield: { value: 5.1, unit: '%股息率', date: '2026-06-13', source: 'Yahoo Finance' },
-    cssc_pb: { value: 1.36, unit: 'xPB', date: '2026-06-13', source: '财报帮' }
+    us10y: { value: 4.48, unit: '%', date: '2026-06-13', source: 'Multpl/FRED' },
+    gold: { value: 4219, unit: '$/oz', date: '2026-06-13', source: 'GoldPrice.org' },
+    brent: { value: 89.9, unit: '$/bbl', date: '2026-06-13', source: 'Fortune' },
+    copper: { value: 13603, unit: '$/t', date: '2026-06-13', source: 'Westmetall LME' },
+    cnooc_yield: { value: 4.8, unit: '%股息率', date: '2026-06-13', source: 'Investing.com' },
+    cssc_pb: { value: 1.76, unit: 'xPB', date: '2026-06-13', source: '东方财富' }
   },
   a_shares: {
-    smic: { price: 124.88, change: -1.98, date: '2026-06-13', source: '同花顺' },
-    sourcejet: { price: 1394, change: -0.45, date: '2026-06-13', source: '东方财富' },
-    cxmt_ipo: { status: '已过会·注册生效·等待发行', date: '2026-06-14', source: '财联社' }
+    smic: { price: 124.88, change: -1.98, date: '2026-06-13', source: '新浪财经' },
+    sourcejet: { price: 1400.01, change: -3.58, date: '2026-06-13', source: '新浪财经' },
+    cxmt_ipo: { status: '已获注册同意·预计7-8月挂牌', date: '2026-06-15', source: '财联社/东方财富' }
   },
   kc50: {
-    current: { value: 1180, change: 0, date: '2026-06-14', source: 'EastMoney 000688' },
-    high_2026: 1180,
+    current: { value: 1663.22, change: 0.05, date: '2026-06-13', source: '搜狐证券/新浪财经' },
+    high_2026: 1663.22,
     tiers: [
       { id: 't1', level: 820, drop: 30, label: 'T1·关注', action: '观察+v8.0信号联动核查', items: '激活逆向池价格警戒' },
       { id: 't2', level: 770, drop: 35, label: 'T2·分批清', action: '清仓第三档9只', items: '芯源微/澜起/长电/中芯A/通富/兆易/华虹H/深南/曙光' },
